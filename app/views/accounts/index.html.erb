@@ -1,45 +1,81 @@
 <div class="container">
-  <div class="row">
-    <div class="col-8">
-      <% @posts.each do |post| %>
-      <div class="insta-post">
-        <div class="post-meta">
-          <%= link_to image_tag(post.account.image.thumb.url, class: "rounded-circle"), profile_path(post.account.username) %>
-          <%= link_to post.account.username, profile_path(post.account.username), class: "text-dark" %> 
-        </div>
-
-        <%= image_tag post.image.url, class: "img img-fluid dashboard-image" %>
-
-        <div class="post-details">
-          <div class="post-actions">
-            <i class="fa fa-heart like-<%= post.id %> <%= 'active' if post_liked_by_user?(post.id) %> fa-2x post-like" data-id="<%= post.id %>"></i>
-            <i class="fa fa-comment fa-2x post-comment"></i>
+  <% if @posts.present? %>
+    <div class="row">
+      <div class="col-8">
+        <% @posts.each do |post| %>
+        <div class="insta-post">
+          <div class="post-meta">
+            <%= link_to image_tag(post.account.image.thumb.url, class: "rounded-circle"), profile_path(post.account.username) %>
+            <%= link_to post.account.username, profile_path(post.account.username), class: "text-dark" %> 
           </div>
 
-          <p><b id="post-<%= post.id %>-likes"><%= post.total_likes_count %></b> likes</p>
-          <p><b id="post-<%= post.id %>-comments"><%= link_to post.account.username, profile_path(post.account.username), class: "text-dark" %></b></p>
-            
-          <%= simple_format post.description %>
+          <%= image_tag post.image.url, class: "img img-fluid" %>
 
-          <p class="text-muted"><%= time_ago_in_words post.created_at %> ago</p>
+          <div class="post-details">
+            <div class="post-actions">
+              <i class="fa fa-heart like-<%= post.id %> <%= 'active' if post_liked_by_user?(post.id) %> fa-2x post-like" data-id="<%= post.id %>"></i>
+
+              <%= link_to post_path(post.id) do %>
+                <i class="fa fa-comment fa-2x post-comment"></i>
+              <% end %>
+            </div>
+
+            <p><b id="post-<%= post.id %>-likes"><%= post.total_likes_count %></b> likes</p>
+            <p><b id="post-<%= post.id %>-comments"><%= link_to post.account.username, profile_path(post.account.username), class: "text-dark" %></b></p>
+              
+            <%= simple_format post.description %>
+    
+            <p class="text-muted"><%= time_ago_in_words post.created_at %> ago</p>
+
+            <%= render "posts/comments", post: post, comments: Comment.includes(:account).where(post_id: post.id) %>
+          </div>
+          
+          <div class="comment-box">
+            <%= form_for @comment do |f| %>
+              <%= f.hidden_field :post_id, value: post.id %>
+              <div class="input-group">
+                <%= f.text_field :comment, placeholder: "Add comment here...", class: "form-control post-comment" %>
+                <div class="input-group-append">
+                  <%= f.submit "Post", class: "btn btn-success float-right" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>       
+        <% end %>
+      </div>
+      <div class="col-4">
+        <div class="account-summary">
+          <p class="m-0">
+            <%= link_to image_tag(current_account.image.thumb.url, class: "rounded-circle float-left m-r-15"), profile_path(current_account.username) if current_account.image.present? %>
+            <b><%= current_account.username %></b><br>
+            <p><%= current_account.full_name %></p>
+          </p>
         </div>
-      </div>       
-      <% end %>
+
+        <div class="follower-suggestions">
+          <%= link_to "View All", "#", class: "float-right text-dark" %>
+          <p class="text-muted">Suggestions for you</p>
+          <%= render "accounts/follower_suggestions" %>
+        </div>
+      </div>
     </div>
-    <div class="col-4">
-      <div class="account-summary">
-        <p>
-          <%= link_to image_tag(current_account.image.thumb.url, class: "rounded-circle"), profile_path(current_account.username) if current_account.image.present? %>
-          <b><%= current_account.username %></b>
-        </p>
-        <p><%= current_account.full_name %></p>
+  <% else %>
+  <div class="jumbotron">
+    <div class="row">
+      <div class="col-sm">
+        <h1 class="display-4">Write Your Story!</h1>
+        <hr class="my-4">
+        <%= link_to "New Post", new_post_path, class: "btn btn-outline-dark" %>
       </div>
 
-      <div class="follower-suggestions">
-        <%= link_to "View All", "#", class: "float-right text-dark" %>
-        <p class="text-muted">Suggestions for you</p>
-        <%= render "accounts/follower_suggestions" %>
+      <div class="col-sm">
+        <%= image_tag("story-1.jpg",  size: "240x200", alt: "Edit Entry", class: "rounded float-left") %>
+        <%= image_tag("story-2.jpg", size: "240x200", alt: "Edit Entry", class: "rounded float-right") %>
       </div>
-    </div>
+    </div>  
   </div>
+
+  <p class="lead text-right"><small>Made with <i class="fa fa-heart"></i> by <%= link_to "Danilo Velozo", "#", class: "text-dark" %></small></p>
+  <% end %>
 </div>
