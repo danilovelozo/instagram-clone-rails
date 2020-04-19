@@ -71,5 +71,5 @@ rails s
 
 ---
 
-![Screenshots](/public/screenshots/instaclone8.png)
+![Screenshots](/public/screenshots/instaclone9.png)
 
