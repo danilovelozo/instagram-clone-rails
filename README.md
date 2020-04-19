@@ -30,7 +30,8 @@ rails db:setup
 ```
 rails s
 ```
-* Default Server:
+
+* Default Server URL:
 
 `http://localhost:3000`
 
@@ -63,6 +64,10 @@ rails s
 ---
 
 ![Screenshots](/public/screenshots/instaclone7.png)
+
+---
+
+![Screenshots](/public/screenshots/instaclone8.png)
 
 ---
 
