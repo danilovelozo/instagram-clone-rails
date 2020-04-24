@@ -25,7 +25,7 @@ bundle install
 rails db:setup
 ```
 
-* You are all set! Now is it possible to start a server:
+* Start a server:
 
 ```
 rails s
